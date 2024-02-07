@@ -62,6 +62,13 @@ Object* TypeObject::new_instance(CodeGen* codegen, std::vector<Object*> args)
 
 void TypeObject::build_defaults(CodeGen* codegen, Object* target)
 {
+    for (int i = 0; i < fields.size(); i++) {
+        auto field = fields[i];
+        if (field->build_default != nullptr) {
+            auto default_value = field->build_default(codegen);
+            field->set(codegen, target, default_value);
+        }
+    }
 }
 
 Object* TypeObject::binary_operator(CodeGen* codegen, BinaryOperatorExpr::OPERATOR op, TypeObject* comparison_type)
