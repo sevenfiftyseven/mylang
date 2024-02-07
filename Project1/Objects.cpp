@@ -185,31 +185,11 @@ std::string TypeObject::cast_fn_name(TypeObject* source_type, TypeObject* result
 
 Object* Object::get_member(CodeGen* codegen, std::string member_name)
 {
-    auto member = type->members[member_name];;
+    auto member = type->members[member_name];
 
     if (member == nullptr) return nullptr; // exit if there is nothing to see.
 
-    if (auto fn_type = dynamic_cast<FunctionTypeObject*>(member->type))
-    {
-        auto base_def = type->functions[member_name];
-        if (fn_type->is_static)
-            return base_def;
-
-
-        auto bound_def = new FunctionDefinitionObject(*base_def);
-        bound_def->bound_object = this;
-        return bound_def;
-    }
-    // if the member is a field -- we need to use getelementptr
-
-    auto field_index = std::find(type->fields.begin(), type->fields.end(), member);
-    auto field = codegen->builder.CreateStructGEP(
-        type->underlying_type,
-        value,
-        std::distance(type->fields.begin(), field_index)
-    );
-
-    return new Object(Object::REFERENCE, member->type, field);
+    return member->get(codegen, this);
 }
 
 Object* Object::call(CodeGen* codegen, std::vector<Object*> params)
@@ -279,5 +259,30 @@ Object* FunctionDefinitionObject::call(CodeGen* codegen, std::vector<Object*> pa
 
 Object* TypeMemberDefinition::get(CodeGen* codegen, Object* parent)
 {
-    return nullptr;
+    if (auto fn_type = dynamic_cast<FunctionTypeObject*>(type))
+    {
+        auto base_def = type->functions[this->name];
+        if (fn_type->is_static)
+            return base_def;
+
+
+        auto bound_def = new FunctionDefinitionObject(*base_def);
+        bound_def->bound_object = this;
+        return bound_def;
+    }
+    // if the member is a field -- we need to use getelementptr
+
+    auto field_index = std::find(member_of->fields.begin(), member_of->fields.end(), this);
+    auto field = codegen->builder.CreateStructGEP(
+        type->underlying_type,
+        value,
+        std::distance(type->fields.begin(), field_index)
+    );
+
+    return new Object(Object::REFERENCE, type, field);
+}
+
+void TypeMemberDefinition::set(CodeGen* codegen, Object* target, Object* value)
+{
+    get(codegen, target)->assign(codegen, value);
 }
