@@ -104,7 +104,16 @@ TypeMemberDefinition* TypeObject::add_member_field(std::string name, TypeObject*
 
 TypeMemberDefinition* TypeObject::add_static_member_field(std::string name, Object* static_object)
 {
-    return nullptr;
+    TypeMemberDefinition* member_def = new TypeMemberDefinition();
+    member_def->name = name;
+    member_def->member_of = this;
+    member_def->type = static_object->type;
+    member_def->value = static_object->value;
+    member_def->is_static = true;
+
+    members[name] = member_def;
+
+    return member_def;
 }
 
 std::string TypeObject::binop_fn_name(BinaryOperatorExpr::OPERATOR op)
