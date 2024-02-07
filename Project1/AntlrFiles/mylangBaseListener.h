@@ -82,11 +82,20 @@ public:
   virtual void enterPrimaryExpression(mylang::PrimaryExpressionContext * /*ctx*/) override { }
   virtual void exitPrimaryExpression(mylang::PrimaryExpressionContext * /*ctx*/) override { }
 
+  virtual void enterAssignmentExpr(mylang::AssignmentExprContext * /*ctx*/) override { }
+  virtual void exitAssignmentExpr(mylang::AssignmentExprContext * /*ctx*/) override { }
+
   virtual void enterCastExpression(mylang::CastExpressionContext * /*ctx*/) override { }
   virtual void exitCastExpression(mylang::CastExpressionContext * /*ctx*/) override { }
 
+  virtual void enterUnaryPrefixExpr(mylang::UnaryPrefixExprContext * /*ctx*/) override { }
+  virtual void exitUnaryPrefixExpr(mylang::UnaryPrefixExprContext * /*ctx*/) override { }
+
   virtual void enterUnarySuffixExpr(mylang::UnarySuffixExprContext * /*ctx*/) override { }
   virtual void exitUnarySuffixExpr(mylang::UnarySuffixExprContext * /*ctx*/) override { }
+
+  virtual void enterLogicalExpr(mylang::LogicalExprContext * /*ctx*/) override { }
+  virtual void exitLogicalExpr(mylang::LogicalExprContext * /*ctx*/) override { }
 
   virtual void enterFunctionCallExpr(mylang::FunctionCallExprContext * /*ctx*/) override { }
   virtual void exitFunctionCallExpr(mylang::FunctionCallExprContext * /*ctx*/) override { }
@@ -94,11 +103,17 @@ public:
   virtual void enterMemberAccessExpr(mylang::MemberAccessExprContext * /*ctx*/) override { }
   virtual void exitMemberAccessExpr(mylang::MemberAccessExprContext * /*ctx*/) override { }
 
-  virtual void enterBinaryOperatorExpr(mylang::BinaryOperatorExprContext * /*ctx*/) override { }
-  virtual void exitBinaryOperatorExpr(mylang::BinaryOperatorExprContext * /*ctx*/) override { }
+  virtual void enterAdditiveExpr(mylang::AdditiveExprContext * /*ctx*/) override { }
+  virtual void exitAdditiveExpr(mylang::AdditiveExprContext * /*ctx*/) override { }
 
-  virtual void enterUnaryExpression(mylang::UnaryExpressionContext * /*ctx*/) override { }
-  virtual void exitUnaryExpression(mylang::UnaryExpressionContext * /*ctx*/) override { }
+  virtual void enterRelationalExpr(mylang::RelationalExprContext * /*ctx*/) override { }
+  virtual void exitRelationalExpr(mylang::RelationalExprContext * /*ctx*/) override { }
+
+  virtual void enterMultiplicativeExpr(mylang::MultiplicativeExprContext * /*ctx*/) override { }
+  virtual void exitMultiplicativeExpr(mylang::MultiplicativeExprContext * /*ctx*/) override { }
+
+  virtual void enterParenExpr(mylang::ParenExprContext * /*ctx*/) override { }
+  virtual void exitParenExpr(mylang::ParenExprContext * /*ctx*/) override { }
 
   virtual void enterInvocationSuffix(mylang::InvocationSuffixContext * /*ctx*/) override { }
   virtual void exitInvocationSuffix(mylang::InvocationSuffixContext * /*ctx*/) override { }

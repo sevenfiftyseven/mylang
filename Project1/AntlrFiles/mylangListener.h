@@ -80,11 +80,20 @@ public:
   virtual void enterPrimaryExpression(mylang::PrimaryExpressionContext *ctx) = 0;
   virtual void exitPrimaryExpression(mylang::PrimaryExpressionContext *ctx) = 0;
 
+  virtual void enterAssignmentExpr(mylang::AssignmentExprContext *ctx) = 0;
+  virtual void exitAssignmentExpr(mylang::AssignmentExprContext *ctx) = 0;
+
   virtual void enterCastExpression(mylang::CastExpressionContext *ctx) = 0;
   virtual void exitCastExpression(mylang::CastExpressionContext *ctx) = 0;
 
+  virtual void enterUnaryPrefixExpr(mylang::UnaryPrefixExprContext *ctx) = 0;
+  virtual void exitUnaryPrefixExpr(mylang::UnaryPrefixExprContext *ctx) = 0;
+
   virtual void enterUnarySuffixExpr(mylang::UnarySuffixExprContext *ctx) = 0;
   virtual void exitUnarySuffixExpr(mylang::UnarySuffixExprContext *ctx) = 0;
+
+  virtual void enterLogicalExpr(mylang::LogicalExprContext *ctx) = 0;
+  virtual void exitLogicalExpr(mylang::LogicalExprContext *ctx) = 0;
 
   virtual void enterFunctionCallExpr(mylang::FunctionCallExprContext *ctx) = 0;
   virtual void exitFunctionCallExpr(mylang::FunctionCallExprContext *ctx) = 0;
@@ -92,11 +101,17 @@ public:
   virtual void enterMemberAccessExpr(mylang::MemberAccessExprContext *ctx) = 0;
   virtual void exitMemberAccessExpr(mylang::MemberAccessExprContext *ctx) = 0;
 
-  virtual void enterBinaryOperatorExpr(mylang::BinaryOperatorExprContext *ctx) = 0;
-  virtual void exitBinaryOperatorExpr(mylang::BinaryOperatorExprContext *ctx) = 0;
+  virtual void enterAdditiveExpr(mylang::AdditiveExprContext *ctx) = 0;
+  virtual void exitAdditiveExpr(mylang::AdditiveExprContext *ctx) = 0;
 
-  virtual void enterUnaryExpression(mylang::UnaryExpressionContext *ctx) = 0;
-  virtual void exitUnaryExpression(mylang::UnaryExpressionContext *ctx) = 0;
+  virtual void enterRelationalExpr(mylang::RelationalExprContext *ctx) = 0;
+  virtual void exitRelationalExpr(mylang::RelationalExprContext *ctx) = 0;
+
+  virtual void enterMultiplicativeExpr(mylang::MultiplicativeExprContext *ctx) = 0;
+  virtual void exitMultiplicativeExpr(mylang::MultiplicativeExprContext *ctx) = 0;
+
+  virtual void enterParenExpr(mylang::ParenExprContext *ctx) = 0;
+  virtual void exitParenExpr(mylang::ParenExprContext *ctx) = 0;
 
   virtual void enterInvocationSuffix(mylang::InvocationSuffixContext *ctx) = 0;
   virtual void exitInvocationSuffix(mylang::InvocationSuffixContext *ctx) = 0;

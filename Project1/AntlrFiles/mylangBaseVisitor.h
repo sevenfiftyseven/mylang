@@ -103,11 +103,23 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitAssignmentExpr(mylang::AssignmentExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitCastExpression(mylang::CastExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
+  virtual std::any visitUnaryPrefixExpr(mylang::UnaryPrefixExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitUnarySuffixExpr(mylang::UnarySuffixExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitLogicalExpr(mylang::LogicalExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -119,11 +131,19 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitBinaryOperatorExpr(mylang::BinaryOperatorExprContext *ctx) override {
+  virtual std::any visitAdditiveExpr(mylang::AdditiveExprContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitUnaryExpression(mylang::UnaryExpressionContext *ctx) override {
+  virtual std::any visitRelationalExpr(mylang::RelationalExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitMultiplicativeExpr(mylang::MultiplicativeExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitParenExpr(mylang::ParenExprContext *ctx) override {
     return visitChildren(ctx);
   }
 

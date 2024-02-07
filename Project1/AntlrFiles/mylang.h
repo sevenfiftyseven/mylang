@@ -504,6 +504,19 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+  class  AssignmentExprContext : public ExpressionContext {
+  public:
+    AssignmentExprContext(ExpressionContext *ctx);
+
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    antlr4::tree::TerminalNode *BINOP_ASSIGN();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  CastExpressionContext : public ExpressionContext {
   public:
     CastExpressionContext(ExpressionContext *ctx);
@@ -518,12 +531,39 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+  class  UnaryPrefixExprContext : public ExpressionContext {
+  public:
+    UnaryPrefixExprContext(ExpressionContext *ctx);
+
+    antlr4::tree::TerminalNode *PREFIX_UNARY_OPS();
+    ExpressionContext *expression();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  UnarySuffixExprContext : public ExpressionContext {
   public:
     UnarySuffixExprContext(ExpressionContext *ctx);
 
     ExpressionContext *expression();
     antlr4::tree::TerminalNode *SUFFIX_UNARY_OPS();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  LogicalExprContext : public ExpressionContext {
+  public:
+    LogicalExprContext(ExpressionContext *ctx);
+
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    antlr4::tree::TerminalNode *BINOP_BOOL_AND();
+    antlr4::tree::TerminalNode *BINOP_BOOL_OR();
+    antlr4::tree::TerminalNode *BOOLEAN_KEYWORD();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -555,25 +595,58 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  BinaryOperatorExprContext : public ExpressionContext {
+  class  AdditiveExprContext : public ExpressionContext {
   public:
-    BinaryOperatorExprContext(ExpressionContext *ctx);
+    AdditiveExprContext(ExpressionContext *ctx);
 
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
-    Binary_operatorContext *binary_operator();
+    antlr4::tree::TerminalNode *BINOP_ADD();
+    antlr4::tree::TerminalNode *BINOP_MINUS();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  UnaryExpressionContext : public ExpressionContext {
+  class  RelationalExprContext : public ExpressionContext {
   public:
-    UnaryExpressionContext(ExpressionContext *ctx);
+    RelationalExprContext(ExpressionContext *ctx);
 
-    antlr4::tree::TerminalNode *PREFIX_UNARY_OPS();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    antlr4::tree::TerminalNode *BINOP_GREATER();
+    antlr4::tree::TerminalNode *BINOP_LESSER();
+    antlr4::tree::TerminalNode *BINOP_GTE();
+    antlr4::tree::TerminalNode *BINOP_LTE();
+    antlr4::tree::TerminalNode *BINOP_EQUALITY();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  MultiplicativeExprContext : public ExpressionContext {
+  public:
+    MultiplicativeExprContext(ExpressionContext *ctx);
+
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    antlr4::tree::TerminalNode *BINOP_MULT();
+    antlr4::tree::TerminalNode *BINOP_DIVIDE();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ParenExprContext : public ExpressionContext {
+  public:
+    ParenExprContext(ExpressionContext *ctx);
+
+    antlr4::tree::TerminalNode *LPAREN();
     ExpressionContext *expression();
+    antlr4::tree::TerminalNode *RPAREN();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 

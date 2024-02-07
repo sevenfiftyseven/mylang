@@ -1,6 +1,7 @@
 #pragma warning(disable:4146)
 #include "ASTBuilder.h"
 
+
 antlrcpp::Any ASTBuilder::visitProgram(mylang::ProgramContext* context) {
     Program program;
     for (auto statement : context->tlsList()->children) {
@@ -168,7 +169,7 @@ antlrcpp::Any ASTBuilder::visitNewExpression(mylang::NewExpressionContext* conte
     return std::make_any<Expression*>(newExpr);
 }
 
-antlrcpp::Any ASTBuilder::visitUnaryExpression(mylang::UnaryExpressionContext* context)
+antlrcpp::Any ASTBuilder::visitUnaryPrefixExpr(mylang::UnaryPrefixExprContext* context)
 {
     auto opExpr = new UnaryOperatorExpr();
     opExpr->context(context);
@@ -239,37 +240,75 @@ antlrcpp::Any ASTBuilder::visitIdentifierExpression(mylang::IdentifierExpression
     return std::make_any<Expression*>(expression);
 }
 
-antlrcpp::Any ASTBuilder::visitBinaryOperatorExpr(mylang::BinaryOperatorExprContext* context)
+antlrcpp::Any ASTBuilder::visitAssignmentExpr(mylang::AssignmentExprContext* context)
 {
-    auto binopExpr = new BinaryOperatorExpr();
-    binopExpr->context(context);
+    auto assignmentExpr = new BinaryOperatorExpr();
+    assignmentExpr->context(context);
 
-    binopExpr->lhe = std::any_cast<Expression*>(visit(context->expression()[0]));
-    binopExpr->rhe = std::any_cast<Expression*>(visit(context->expression()[1]));
+    assignmentExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
+    assignmentExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));
 
-    // we should build a map instead of running an if statement like this.
-    auto op_text = context->binary_operator()->getText();
+    return std::make_any<Expression*>(assignmentExpr);
+}
 
-    if (op_text == "==")
-        binopExpr->op = BinaryOperatorExpr::EQUALITY;
-    else if (op_text == "-")
-        binopExpr->op = BinaryOperatorExpr::MINUS;
-    else if (op_text == "+")
-        binopExpr->op = BinaryOperatorExpr::ADD;
-    else if (op_text == "||" || op_text == "or")
-        binopExpr->op = BinaryOperatorExpr::BOOL_OR;
-    else if (op_text == "&&" || op_text == "and")
-        binopExpr->op = BinaryOperatorExpr::BOOL_OR;
-    else if (op_text == "<")
-        binopExpr->op = BinaryOperatorExpr::LESSER;
-    else if (op_text == ">")
-        binopExpr->op = BinaryOperatorExpr::GREATER;
-    else if (op_text == "=")
-        binopExpr->op = BinaryOperatorExpr::ASSIGN;
-    else if (op_text == "*")
-        binopExpr->op = BinaryOperatorExpr::MULT;
+antlrcpp::Any ASTBuilder::visitAdditiveExpr(mylang::AdditiveExprContext* context)
+{
+    auto additiveExpr = new BinaryOperatorExpr();
+    additiveExpr->context(context);
 
-    return std::make_any<Expression*>(binopExpr);
+    additiveExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
+    additiveExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));
+    additiveExpr->op = context->BINOP_ADD() ? BinaryOperatorExpr::ADD : BinaryOperatorExpr::MINUS;
+
+    return std::make_any<Expression*>(additiveExpr);
+}
+
+antlrcpp::Any ASTBuilder::visitMultiplicativeExpr(mylang::MultiplicativeExprContext* context)
+{
+    auto multiplicativeExpr = new BinaryOperatorExpr();
+    multiplicativeExpr->context(context);
+
+    multiplicativeExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
+    multiplicativeExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));
+    multiplicativeExpr->op = context->BINOP_MULT() ? BinaryOperatorExpr::MULT : BinaryOperatorExpr::DIVIDE;
+
+    return std::make_any<Expression*>(multiplicativeExpr);
+}
+
+antlrcpp::Any ASTBuilder::visitRelationalExpr(mylang::RelationalExprContext* context)
+{
+    auto relationalExpr = new BinaryOperatorExpr();
+    relationalExpr->context(context);
+
+    relationalExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
+    relationalExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));
+
+    // Determine the operation type based on the operator token
+    if (context->BINOP_GREATER()) {
+        relationalExpr->op = BinaryOperatorExpr::GREATER;
+    } else if (context->BINOP_LESSER()) {
+        relationalExpr->op = BinaryOperatorExpr::LESSER;
+    } else if (context->BINOP_GTE()) {
+        relationalExpr->op = BinaryOperatorExpr::GTE;
+    } else if (context->BINOP_LTE()) {
+        relationalExpr->op = BinaryOperatorExpr::LTE;
+    } else if (context->BINOP_EQUALITY()) {
+        relationalExpr->op = BinaryOperatorExpr::EQUALITY;
+    }
+
+    return std::make_any<Expression*>(relationalExpr);
+}
+
+antlrcpp::Any ASTBuilder::visitLogicalExpr(mylang::LogicalExprContext* context)
+{
+    auto logicalExpr = new BinaryOperatorExpr();
+    logicalExpr->context(context);
+
+    logicalExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
+    logicalExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));
+    logicalExpr->op = context->BINOP_BOOL_AND() ? BinaryOperatorExpr::BOOL_AND : BinaryOperatorExpr::BOOL_OR;
+
+    return std::make_any<Expression*>(logicalExpr);
 }
 
 antlrcpp::Any ASTBuilder::visitIfStatement(mylang::IfStatementContext* context)

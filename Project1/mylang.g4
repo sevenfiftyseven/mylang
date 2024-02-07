@@ -88,21 +88,28 @@ primary_expression: literalExpression | identifierExpression;
 // Expressions
 
 expression:
-	primary_expression							# primaryExpression
-	| binaryExpression		                    # binaryOperatorExpr
+	expression (BINOP_ASSIGN) expression				# assignmentExpr
+	| expression (BINOP_ADD | BINOP_MINUS) expression	# additiveExpr
+	| expression (BINOP_MULT | BINOP_DIVIDE) expression	# multiplicativeExpr
+	| expression (
+		BINOP_GREATER
+		| BINOP_LESSER
+		| BINOP_GTE
+		| BINOP_LTE
+		| BINOP_EQUALITY
+	) expression                                # relationalExpr
+	| expression (
+		BINOP_BOOL_AND
+		| BINOP_BOOL_OR
+		| BOOLEAN_KEYWORD
+	) expression								# logicalExpr
+	| LPAREN expression RPAREN					# parenExpr
+	| primary_expression						# primaryExpression
 	| expression DOT identifierExpression		# memberAccessExpr
 	| expression SUFFIX_UNARY_OPS				# unarySuffixExpr
-	| PREFIX_UNARY_OPS expression				# unaryExpression
-	| LPAREN typeSpecifier RPAREN expression	# castExpression
-	| expression invocationSuffix				# functionCallExpr;
-
-
-binaryExpression:
-    expression binary_operator=BINOP_ASSIGN expression
-    | expression binary_operator=(BINOP_ADD | BINOP_MINUS) expression
-    | expression binary_operator=(BINOP_MULT | BINOP_DIVIDE) expression
-    | expression binary_operator=(BINOP_GREATER | BINOP_LESSER | BINOP_GTE | BINOP_LTE | BINOP_EQUALITY) expression
-    | expression binary_operator=(BINOP_BOOL_AND | BINOP_BOOL_OR | BOOLEAN_KEYWORD) expression;
+	| PREFIX_UNARY_OPS expression				# unaryPrefixExpr
+	| expression invocationSuffix				# functionCallExpr
+	| LPAREN typeSpecifier RPAREN expression	# castExpression;
 
 invocationSuffix: LPAREN argumentList? RPAREN;
 argumentList: expression (COMMA expression)*;

@@ -36,13 +36,23 @@ public:
 
     antlrcpp::Any visitNewExpression(mylang::NewExpressionContext* context);
 
-    antlrcpp::Any visitUnaryExpression(mylang::UnaryExpressionContext* context);
+    antlrcpp::Any visitUnaryPrefixExpr(mylang::UnaryPrefixExprContext* context);
 
     antlrcpp::Any visitLiteralExpression(mylang::LiteralExpressionContext* context);
 
     antlrcpp::Any visitIdentifierExpression(mylang::IdentifierExpressionContext* context);
 
-    antlrcpp::Any visitBinaryOperatorExpr(mylang::BinaryOperatorExprContext* context);
+    antlrcpp::Any visitAssignmentExpr(mylang::AssignmentExprContext* context);
+
+    antlrcpp::Any visitAdditiveExpr(mylang::AdditiveExprContext* context);
+
+    antlrcpp::Any visitMultiplicativeExpr(mylang::MultiplicativeExprContext* context);
+
+    antlrcpp::Any visitRelationalExpr(mylang::RelationalExprContext* context);
+
+    antlrcpp::Any visitLogicalExpr(mylang::LogicalExprContext* context);
+
+    //antlrcpp::Any visitBinaryOperatorExpr(mylang::BinaryOperatorExprContext* context);
 
     antlrcpp::Any visitIfStatement(mylang::IfStatementContext* context);
 

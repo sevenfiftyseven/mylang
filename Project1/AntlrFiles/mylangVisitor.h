@@ -63,17 +63,27 @@ public:
 
     virtual std::any visitPrimaryExpression(mylang::PrimaryExpressionContext *context) = 0;
 
+    virtual std::any visitAssignmentExpr(mylang::AssignmentExprContext *context) = 0;
+
     virtual std::any visitCastExpression(mylang::CastExpressionContext *context) = 0;
 
+    virtual std::any visitUnaryPrefixExpr(mylang::UnaryPrefixExprContext *context) = 0;
+
     virtual std::any visitUnarySuffixExpr(mylang::UnarySuffixExprContext *context) = 0;
+
+    virtual std::any visitLogicalExpr(mylang::LogicalExprContext *context) = 0;
 
     virtual std::any visitFunctionCallExpr(mylang::FunctionCallExprContext *context) = 0;
 
     virtual std::any visitMemberAccessExpr(mylang::MemberAccessExprContext *context) = 0;
 
-    virtual std::any visitBinaryOperatorExpr(mylang::BinaryOperatorExprContext *context) = 0;
+    virtual std::any visitAdditiveExpr(mylang::AdditiveExprContext *context) = 0;
 
-    virtual std::any visitUnaryExpression(mylang::UnaryExpressionContext *context) = 0;
+    virtual std::any visitRelationalExpr(mylang::RelationalExprContext *context) = 0;
+
+    virtual std::any visitMultiplicativeExpr(mylang::MultiplicativeExprContext *context) = 0;
+
+    virtual std::any visitParenExpr(mylang::ParenExprContext *context) = 0;
 
     virtual std::any visitInvocationSuffix(mylang::InvocationSuffixContext *context) = 0;
 
