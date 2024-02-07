@@ -1,0 +1,6 @@
+x64/*
+.vs/*
+.vscode/*
+Project1/x64/*
+*.o
+*.exe

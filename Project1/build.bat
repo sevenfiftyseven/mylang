@@ -1,0 +1,1 @@
+C:\Users\Braed\Downloads\llvm-project\llvm-project-16.0.5.src\build\Debug\bin\llc -filetype=obj -o main.o out.ll

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files\antlr-grammar">
+      <UniqueIdentifier>{46331fd5-56d7-49e6-952c-93a30454dc35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\antlr-grammar">
+      <UniqueIdentifier>{244aae7f-26c3-4e9e-a9a5-2b6750fd7cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\grammar-def">
+      <UniqueIdentifier>{82e1052d-531f-42af-b6fc-da1a7d90c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{9f11e5f9-9c4e-4528-a404-432d5778d57e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AST.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ASTBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CodeGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AntlrFiles\mylangBaseListener.cpp">
+      <Filter>Source Files\antlr-grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="AntlrFiles\mylangListener.cpp">
+      <Filter>Source Files\antlr-grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="AntlrFiles\mylang.cpp">
+      <Filter>Source Files\antlr-grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="AntlrFiles\mylangBaseVisitor.cpp">
+      <Filter>Source Files\antlr-grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="AntlrFiles\intermediate\base_lexer.cpp">
+      <Filter>Source Files\antlr-grammar</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="out.ll">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="core.ll">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mylang.g4">
+      <Filter>Source Files\grammar-def</Filter>
+    </None>
+    <None Include="base_parser.g4">
+      <Filter>Source Files\grammar-def</Filter>
+    </None>
+    <None Include="base_lexer.g4">
+      <Filter>Source Files\grammar-def</Filter>
+    </None>
+    <None Include="core.mc">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="dream.mc">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="sample.mc">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="string.mc">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="object.mc">
+      <Filter>scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AST.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ASTBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AntlrFiles\mylangBaseListener.h">
+      <Filter>Header Files\antlr-grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="AntlrFiles\mylangListener.h">
+      <Filter>Header Files\antlr-grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="AntlrFiles\mylang.h">
+      <Filter>Header Files\antlr-grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="AntlrFiles\mylangBaseVisitor.h">
+      <Filter>Header Files\antlr-grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="AntlrFiles\intermediate\base_lexer.h">
+      <Filter>Header Files\antlr-grammar</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Notes.txt" />
+  </ItemGroup>
+</Project>
