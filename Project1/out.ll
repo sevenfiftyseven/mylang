@@ -7,8 +7,11 @@ source_filename = "top"
 @0 = common global i32 0
 @1 = private unnamed_addr constant [27 x i8] c"counter updated: %i -> %i\0A\00", align 1
 @2 = private unnamed_addr constant [6 x i8] c"Hello\00", align 1
-@3 = private unnamed_addr constant [13 x i8] c"counter: %i\0A\00", align 1
-@4 = private unnamed_addr constant [7 x i8] c"b: %i\0A\00", align 1
+@3 = private unnamed_addr constant [8 x i8] c"%s: %i\0A\00", align 1
+@4 = private unnamed_addr constant [13 x i8] c"counter: %i\0A\00", align 1
+@5 = private unnamed_addr constant [2 x i8] c"a\00", align 1
+@6 = private unnamed_addr constant [2 x i8] c"b\00", align 1
+@7 = private unnamed_addr constant [2 x i8] c"c\00", align 1
 
 declare i32 @strlen(i8*)
 
@@ -39,6 +42,13 @@ define void @__entity_constructor_entity(%0* %0) {
   ret void
 }
 
+define void @__entity_constructor_entity_int(%0* %0, i32 %1) {
+  %3 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
+  %4 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
+  store i32 %1, i32* %4, align 4
+  ret void
+}
+
 define %1 @__entity_CAST_string(%0* %0) {
   %2 = alloca %1, align 8
   %3 = call i32 @strlen(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @2, i32 0, i32 0))
@@ -63,15 +73,29 @@ define i32 @__entity_my_id_entity(%0* %0) {
   ret i32 %4
 }
 
+define void @print(i8* %0, %0 %1) {
+  %3 = alloca %0, align 8
+  store %0 %1, %0* %3, align 4
+  %4 = getelementptr inbounds %0, %0* %3, i32 0, i32 0
+  %5 = load i32, i32* %4, align 4
+  %6 = call i32 (...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @3, i32 0, i32 0), i8* %0, i32 %5)
+  ret void
+}
+
 define i32 @main() {
   %1 = alloca %0, align 8
   call void @__entity_constructor_entity(%0* %1)
   %2 = alloca %0, align 8
   call void @__entity_constructor_entity(%0* %2)
-  %3 = load i32, i32* @0, align 4
-  %4 = call i32 (...) @printf(i8* getelementptr inbounds ([13 x i8], [13 x i8]* @3, i32 0, i32 0), i32 %3)
-  %5 = call i32 @__entity_my_id_entity(%0* %2)
-  %6 = call i32 (...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @4, i32 0, i32 0), i32 %5)
-  %7 = call i32 @__entity_next_id()
+  %3 = alloca %0, align 8
+  call void @__entity_constructor_entity_int(%0* %3, i32 3)
+  %4 = load i32, i32* @0, align 4
+  %5 = call i32 (...) @printf(i8* getelementptr inbounds ([13 x i8], [13 x i8]* @4, i32 0, i32 0), i32 %4)
+  %6 = load %0, %0* %1, align 4
+  call void @print(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @5, i32 0, i32 0), %0 %6)
+  %7 = load %0, %0* %2, align 4
+  call void @print(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @6, i32 0, i32 0), %0 %7)
+  %8 = load %0, %0* %3, align 4
+  call void @print(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @7, i32 0, i32 0), %0 %8)
   ret i32 0
 }

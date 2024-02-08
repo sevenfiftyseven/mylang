@@ -13,6 +13,11 @@ struct entity {
 		id = next_id();
 	}
 
+	constructor(int myid)
+	{
+		id = myid;
+	}
+
 	cast string() {
 		return (string)"Hello";
 	}
@@ -22,14 +27,20 @@ struct entity {
 	}
 }
 
+void print(cstring name, entity e) {
+	printf("%s: %i\n", name, e.id);
+}
+
 int main() {
 	entity a;
 	entity b;
+	entity c = 3; // I don't know that I truly like this syntax.
 
 	printf("counter: %i\n", entity.counter);
-	printf("b: %i\n", b.my_id());
 
-	entity.next_id();
+	print("a", a);
+	print("b", b);
+	print("c", c);
 
 	return 0;
 }

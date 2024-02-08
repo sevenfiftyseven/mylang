@@ -75,7 +75,7 @@ Object* CodeGen::TryCast(Object* object, TypeObject* target)
     {
         return target->new_instance(this, { object });
     }
-    throw "Unable to cast object to target to target type";
+    throw "Unable to cast object to target type";
 }
 
 Object* CodeGen::ConstantInt(int value)
@@ -508,7 +508,7 @@ void FunctionBuilder::define(std::vector<Statement*> statements)
     {
         auto arg_idx = i + (this_object == nullptr ? 0 : 1);
 
-        Value* arg = function->getArg(i);
+        Value* arg = function->getArg(arg_idx);
 
         // here we should check for struct_type variables and automatically allocate them onto the stack
         // alternatively we could force passing structs by a pointer to prevent copying them...
@@ -519,7 +519,7 @@ void FunctionBuilder::define(std::vector<Statement*> statements)
             gen->builder.CreateStore(arg, alloca_arg);
             gen->stackFrame->add_var(param_names[i], new Object(
                 Object::Classification::REFERENCE,
-                type->template_types[i + 1],
+                type->template_types[arg_idx + 1],
                 alloca_arg
             ));
         }
@@ -527,7 +527,7 @@ void FunctionBuilder::define(std::vector<Statement*> statements)
         {
             gen->stackFrame->add_var(param_names[i], new Object(
                 Object::Classification::VALUE,
-                type->template_types[i + 1],
+                type->template_types[arg_idx + 1],
                 arg
             ));
         }

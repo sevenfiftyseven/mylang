@@ -314,6 +314,8 @@ void AST::FunctionDeclaration::build(CodeGen* codegen)
     if (has_body) {
         builder.define(body);
     }
+
+    codegen->stackFrame->add_var(id, fn_def);
 }
 
 TypeMemberDefinition* AST::FunctionDeclaration::build_member(CodeGen* gen, TypeObject* type)

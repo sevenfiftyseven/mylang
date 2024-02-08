@@ -71,9 +71,10 @@ antlrcpp::Any ASTBuilder::visitStatement(mylang::StatementContext* context)
 
 antlrcpp::Any ASTBuilder::visitExpressionStatement(mylang::ExpressionStatementContext* context)
 {
-    auto value = std::any_cast<Expression*>(visit(context->expression()));
     auto expr_statement = new ExpressionStatement();
-    expr_statement->expression = value;
+    expr_statement->context(context);
+
+    expr_statement->expression = std::any_cast<Expression*>(visit(context->expression()));
     return std::make_any<Statement*>(expr_statement);
 }
 
