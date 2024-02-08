@@ -218,6 +218,7 @@ namespace AST
 		std::string id;
 		bool has_body = false;
 		bool has_return = false;
+		bool is_static = false;
 
 		std::vector<Parameter*> parameters;
 		std::vector<Statement*> body;

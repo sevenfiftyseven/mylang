@@ -15,7 +15,7 @@ void TypeObject::construct(CodeGen* codegen, Object* target, std::vector<Object*
 {
     std::vector<TypeObject*> arg_types;
     std::vector<Object*> _args;
-    _args.push_back(target);
+
     arg_types.push_back(this);
     
     for (auto a : args)
@@ -25,15 +25,8 @@ void TypeObject::construct(CodeGen* codegen, Object* target, std::vector<Object*
     }
 
     auto constructor_fn_name = TypeObject::member_fn_name(this, "constructor", codegen->function_type(codegen->type("void"), arg_types));
-    // I have to go so I will type out my ideas here :::: 
-    // Essentially the way I want the typing system to construct new objects is similar to how meta-typing works in python.
-    // you have a method that creates the new object (defined by meta type) and a method that constructs the new object.
-    // for now this is the "create" method and the "construct" method. Create returns an object, construct does not.
-    // Ideally, construct is called after create in the instanciation pipeline.
-    // so here -- we should check to see if a constructor function for the given cast type exists
-    // if it does we should invoke the system method for instanciation.
+    auto constructor_fn = target->get_member(codegen, constructor_fn_name);
 
-    auto constructor_fn = functions[constructor_fn_name];
     if (constructor_fn != nullptr)
     {
         constructor_fn->call(codegen, _args);
@@ -123,6 +116,13 @@ TypeMemberDefinition* TypeObject::add_static_member_field(std::string name, Obje
     return member_def;
 }
 
+TypeObject* TypeObject::pointer_to()
+{
+    auto type = new TypeObject(*this);
+    type->underlying_type = type->underlying_type->getPointerTo();
+    return type;
+}
+
 std::string TypeObject::binop_fn_name(BinaryOperatorExpr::OPERATOR op)
 {
     switch (op)
@@ -195,8 +195,14 @@ Object* Object::get_member(CodeGen* codegen, std::string member_name)
 Object* Object::call(CodeGen* codegen, std::vector<Object*> params)
 {
     std::vector<llvm::Value*> arguments;
-    for (auto arg : params)
+    for (int i = 0; i < params.size(); i++)
     {
+        auto arg = params[i];
+
+        if (this->type->template_types.size() > i + 2) {
+            arg = codegen->TryCast(arg, this->type->template_types[i + 1]);
+        }
+
         arguments.push_back(codegen->TryLoad(arg));
     }
 
@@ -207,6 +213,7 @@ Object* Object::call(CodeGen* codegen, std::vector<Object*> params)
 
 Value* Object::call(CodeGen* codegen, std::vector<Value*> params)
 {
+    auto fn_type = (FunctionType*)type->underlying_type;
     return codegen->builder.CreateCall((FunctionType*)type->underlying_type, value, params);
 }
 
@@ -236,50 +243,69 @@ void Object::assign(CodeGen* codegen, Object* rho)
 Object* FunctionDefinitionObject::call(CodeGen* codegen, std::vector<Object*> params)
 {
     if (auto fntype = dynamic_cast<FunctionTypeObject*>(type)) {
-        std::vector<Object*> p;
-        if (bound_object != nullptr)
-            p.push_back(codegen->TryCast(bound_object, fntype->template_types[1])); // bound objects will always be in this slot
-        
-        //for (auto a : params) p.push_back(a);
-        for (int i = 0; i < params.size(); i++)
-        {
-            p.push_back(codegen->TryCast(params[i], fntype->template_types[(bound_object == nullptr ? 1 : 2) + i])); // slot 1 if there is no bound object otherwise slot 2
-        }
-
         if (fntype->system_inline) // cant use an and here ... :/
         {
+            std::vector<Object*> p(params);
+
+            if (bound_object != nullptr)
+                p.insert(p.begin(), bound_object);
+
             return inline_body(codegen, p);
         }
+        else if (bound_object != nullptr)
+        {
+            std::vector<Value*> p;
+            p.push_back(codegen->TryCast(bound_object, fntype->template_types[1])->value); 
+            // bound objects shouldn't be loaded. -- also this line is kinda hard to read (looks like type_object->value // which is usually invalid)
+            // really need a better solution for telling functions not to convert pointers
+            // really need to finish pointers
+            // zzzz -_-
 
-        return Object::call(codegen, p);
+            //for (auto a : params) p.push_back(a);
+            for (int i = 0; i < params.size(); i++)
+            {
+                p.push_back(codegen->TryLoad(codegen->TryCast(params[i], fntype->template_types[2 + i]))); // slot 1 if there is no bound object otherwise slot 2
+            }
+
+            return new Object(fntype->template_types[0], Object::call(codegen, p));
+        }
+        else
+        {
+            return Object::call(codegen, params);
+        }
     }
 
     return Object::call(codegen, params);
 }
 
-Object* TypeMemberDefinition::get(CodeGen* codegen, Object* parent)
+Object* TypeMemberDefinition::get(CodeGen* codegen, Object* target)
 {
     if (auto fn_type = dynamic_cast<FunctionTypeObject*>(type))
     {
-        auto base_def = type->functions[this->name];
+        auto base_def = member_of->functions[this->name];
         if (fn_type->is_static)
             return base_def;
 
 
         auto bound_def = new FunctionDefinitionObject(*base_def);
-        bound_def->bound_object = this;
+        bound_def->bound_object = target;
         return bound_def;
     }
-    // if the member is a field -- we need to use getelementptr
+    else if (is_static)
+    {
+        return new Object(Object::REFERENCE, type, value);
+    }
+    else
+    {
+        auto field_index = std::find(member_of->fields.begin(), member_of->fields.end(), this);
+        auto field = codegen->builder.CreateStructGEP(
+            member_of->underlying_type,
+            target->value,
+            std::distance(member_of->fields.begin(), field_index)
+        );
 
-    auto field_index = std::find(member_of->fields.begin(), member_of->fields.end(), this);
-    auto field = codegen->builder.CreateStructGEP(
-        type->underlying_type,
-        value,
-        std::distance(type->fields.begin(), field_index)
-    );
-
-    return new Object(Object::REFERENCE, type, field);
+        return new Object(Object::REFERENCE, type, field);
+    }
 }
 
 void TypeMemberDefinition::set(CodeGen* codegen, Object* target, Object* value)

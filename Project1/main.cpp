@@ -37,12 +37,12 @@ int main(int argc, char* argv[])
 	base_lexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
 
-	//tokens.fill();
-	//auto token_list = tokens.getTokens();
-	//for (auto token : token_list) {
-	//	std::cout << token->getType() << "\t" << token->getText() << std::endl;
-	//}
-	//tokens.reset();
+	tokens.fill();
+	auto token_list = tokens.getTokens();
+	for (auto token : token_list) {
+		std::cout << token->getType() << "\t" << token->getText() << std::endl;
+	}
+	tokens.reset();
 
 	mylang parser(&tokens);
 

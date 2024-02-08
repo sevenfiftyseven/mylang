@@ -243,6 +243,7 @@ void AST::ElseClause::build(CodeGen* codegen)
 void AST::ReturnStatement::build(CodeGen* codegen)
 {
     // !TODO: cast result if necessary.
+    // we would probably need to track what function we are inside of.
     if (expression != nullptr)
     {
         auto val = expression->build_value(codegen);
@@ -317,7 +318,49 @@ void AST::FunctionDeclaration::build(CodeGen* codegen)
 
 TypeMemberDefinition* AST::FunctionDeclaration::build_member(CodeGen* gen, TypeObject* type)
 {
-    return nullptr;
+    TypeObject* result_type = returnType->get_type(gen);
+    std::vector<TypeObject*> argTypes;
+    std::vector<Type*> llvm_types;
+
+    if (!is_static) {
+        argTypes.push_back(type);
+        llvm_types.push_back(type->underlying_type->getPointerTo());
+    }
+
+    for (auto param_type : parameters)
+    {
+        auto t = param_type->type->get_type(gen);
+        argTypes.push_back(t);
+        llvm_types.push_back(t->underlying_type);
+    }
+
+    auto functionType = gen->function_type(result_type, argTypes);
+    functionType->is_static = is_static;
+
+    functionType->underlying_type = FunctionType::get(result_type->underlying_type, llvm_types, false);
+
+    FunctionBuilder builder(gen, id, functionType);
+    auto fn_def = builder.declare(parameters);
+
+    if (!is_static)
+        builder.set_binding(type);
+
+    auto member_def = type->add_member_function(id, fn_def);
+    member_def->is_static = is_static;
+
+    if (is_static) { // need a way to bind a type to a static type method
+        for (auto member : type->members) {
+            if (member.second->is_static) {
+                builder.set_variable(member.first, member.second->get(gen, nullptr));
+            }
+        }
+    }
+
+    if (has_body) {
+        builder.define(body);
+    }
+
+    return member_def;
 }
 
 Object* AST::MemberAccessExpression::build_value(CodeGen* codegen)
@@ -523,18 +566,23 @@ TypeMemberDefinition* AST::ConstructorDeclaration::build_member(CodeGen* gen, Ty
 {
     auto result_type = gen->type("void");
     std::vector<TypeObject*> argTypes;
+    std::vector<Type*> fn_types;
+
     argTypes.push_back(type);
+    fn_types.push_back(type->underlying_type->getPointerTo());
 
     for (auto param_type : parameters)
     {
-        argTypes.push_back(param_type->type->get_type(gen));
+        auto t = param_type->type->get_type(gen);
+        argTypes.push_back(t);
+        fn_types.push_back(t->underlying_type);
     }
 
     auto functionType = gen->function_type(result_type, argTypes);
     auto id = TypeObject::member_fn_name(type, "constructor", gen->function_type(gen->type("void"), argTypes));
 
     // !!TODO:: FIX THIS BANDAID?
-    functionType->underlying_type = FunctionType::get(result_type->underlying_type, { type->underlying_type->getPointerTo() }, false);
+    functionType->underlying_type = FunctionType::get(result_type->underlying_type, fn_types, false);
 
     FunctionBuilder builder(gen, id, functionType);
 

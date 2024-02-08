@@ -53,6 +53,7 @@ public:
 
     llvm::Type* underlying_type = nullptr; // should we even define a struct in llvm per class? I think so?
     TypeObject* parent_type = nullptr;
+    bool is_pointer = false;
 
     // functions
     //std::map<std::string, Object*> functions;
@@ -61,23 +62,31 @@ public:
 
     std::vector<TypeMemberDefinition*> fields;
 
+    // object manipulation
     Object* create(CodeGen* codegen, llvm::Value* value = nullptr);
     void construct(CodeGen* codegen, Object* target, std::vector<Object*> args);
     bool has_constructor(CodeGen* codegen, std::vector<TypeObject*> arg_types);
     Object* new_instance(CodeGen* codegen, std::vector<Object*> args);
     void build_defaults(CodeGen* codegen, Object* target);
 
+    // function lookup helpers
+
     Object* binary_operator(CodeGen* codegen, BinaryOperatorExpr::OPERATOR op, TypeObject* comparison_type);
     Object* unary_operator(CodeGen* codegen, UnaryOperatorExpr::OPERATOR op);
-
-    TypeMemberDefinition* add_member_function(std::string name, FunctionDefinitionObject* fn);
-    TypeMemberDefinition* add_member_field(std::string name, TypeObject* type);
-    TypeMemberDefinition* add_static_member_field(std::string name, Object* static_object);
 
     static std::string binop_fn_name(BinaryOperatorExpr::OPERATOR op);
     static std::string unop_fn_name(UnaryOperatorExpr::OPERATOR op);
     static std::string member_fn_name(TypeObject* source_type, std::string fn_name, TypeObject* fn_type);
     static std::string cast_fn_name(TypeObject* source_type, TypeObject* result_type);
+
+    // type definition functions
+
+    TypeMemberDefinition* add_member_function(std::string name, FunctionDefinitionObject* fn);
+    TypeMemberDefinition* add_member_field(std::string name, TypeObject* type);
+    TypeMemberDefinition* add_static_member_field(std::string name, Object* static_object);
+
+    // type helper functions
+    TypeObject* pointer_to();
 
     // how do we say a fn has variable args? idk yet.
 };
@@ -110,6 +119,6 @@ public:
 
     std::function<Object* (CodeGen*)> build_default; // should this take an object* as well? or is it only static values?
 
-    Object* get(CodeGen* codegen, Object* parent);
+    Object* get(CodeGen* codegen, Object* target);
     void set(CodeGen* codegen, Object* target, Object* value); // this may not be that necessary?
 };

@@ -21,6 +21,14 @@ void PrintType(llvm::Type* type)
 // is there a case to make this implementable by the type?
 Value* CodeGen::TryLoad(Object* object)
 {
+    // I think the usage behind reference and value are not clear.
+    // currently I call something a reference and then use it as a value.
+    // Originally this came because I had a reference and was using it as a value.
+    // Things flagged as value can then be used as a value etc.
+    // However we need to flip this. Things treated as a reference should be passed by reference.
+    // Things treated as a value should be loaded before use.
+    // This would fix a lot of headaches.
+    
     if (object->classification == Object::REFERENCE) { // why do we do this? It seems unnecessary.
         if (llvm::isa<llvm::AllocaInst>(object->value)) {
             return builder.CreateLoad(object->type->underlying_type, object->value);
@@ -32,7 +40,7 @@ Value* CodeGen::TryLoad(Object* object)
             return builder.CreateLoad(object->type->underlying_type, object->value);
         }
     }
-    else if (llvm::isa<llvm::Instruction>(object->value)) // this should be changed
+    else if (object->value != nullptr && llvm::isa<llvm::Instruction>(object->value)) // this should be changed
     {
         auto node = ((Instruction*)object->value)->getMetadata("deref_flag");
         if (node && node->getNumOperands() > 0)
@@ -493,6 +501,8 @@ void FunctionBuilder::define(std::vector<Statement*> statements)
     gen->pushStackFrame(true);
 
     gen->stackFrame->this_object = this_object;
+    for (auto var : additional_variables)
+        gen->stackFrame->add_var(var.first, var.second);
 
     for (int i = 0; i < param_names.size(); i++)
     {
@@ -556,4 +566,9 @@ void FunctionBuilder::define(std::vector<Statement*> statements)
 void FunctionBuilder::set_binding(TypeObject* type)
 {
     this_object = new Object(type, ((Function*)def->value)->getArg(0));
+}
+
+void FunctionBuilder::set_variable(std::string name, Object* value)
+{
+    additional_variables[name] = value;
 }

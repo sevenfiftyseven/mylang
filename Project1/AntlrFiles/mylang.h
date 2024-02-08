@@ -177,6 +177,7 @@ public:
     antlr4::tree::TerminalNode *RPAREN();
     EmptyStatementContext *emptyStatement();
     antlr4::tree::TerminalNode *SEMI();
+    antlr4::tree::TerminalNode *STATIC();
     ParameterListContext *parameterList();
     antlr4::tree::TerminalNode *LBRACKET();
     StatementListContext *statementList();

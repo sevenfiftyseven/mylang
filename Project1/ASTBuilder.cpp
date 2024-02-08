@@ -24,6 +24,7 @@ antlrcpp::Any ASTBuilder::visitFunctionDeclaration(mylang::FunctionDeclarationCo
 
     fnDef->returnType = std::any_cast<TypeReference*>(visit(context->typeSpecifier()));
     fnDef->id = context->ID()->getText();
+    fnDef->is_static = context->STATIC() != nullptr;
 
     if (context->parameterList() != NULL) {
         for (auto parameter : context->parameterList()->parameter())
@@ -244,6 +245,8 @@ antlrcpp::Any ASTBuilder::visitAssignmentExpr(mylang::AssignmentExprContext* con
 {
     auto assignmentExpr = new BinaryOperatorExpr();
     assignmentExpr->context(context);
+
+    assignmentExpr->op = BinaryOperatorExpr::ASSIGN;
 
     assignmentExpr->lhe = std::any_cast<Expression*>(visit(context->expression(0)));
     assignmentExpr->rhe = std::any_cast<Expression*>(visit(context->expression(1)));

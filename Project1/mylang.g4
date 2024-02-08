@@ -21,7 +21,7 @@ memberStatement:
 
 // Top level statements
 functionDeclaration:
-	typeSpecifier ID LPAREN parameterList? RPAREN (
+	STATIC? typeSpecifier ID LPAREN parameterList? RPAREN (
 		emptyStatement
 		| (LBRACKET statementList RBRACKET)
 		| SEMI
@@ -88,8 +88,7 @@ primary_expression: literalExpression | identifierExpression;
 // Expressions
 
 expression:
-	expression (BINOP_ASSIGN) expression				# assignmentExpr
-	| expression (BINOP_ADD | BINOP_MINUS) expression	# additiveExpr
+	expression (BINOP_ADD | BINOP_MINUS) expression	# additiveExpr
 	| expression (BINOP_MULT | BINOP_DIVIDE) expression	# multiplicativeExpr
 	| expression (
 		BINOP_GREATER
@@ -103,13 +102,14 @@ expression:
 		| BINOP_BOOL_OR
 		| BOOLEAN_KEYWORD
 	) expression								# logicalExpr
-	| LPAREN expression RPAREN					# parenExpr
+    | LPAREN expression RPAREN					# parenExpr
 	| primary_expression						# primaryExpression
 	| expression DOT identifierExpression		# memberAccessExpr
 	| expression SUFFIX_UNARY_OPS				# unarySuffixExpr
 	| PREFIX_UNARY_OPS expression				# unaryPrefixExpr
 	| expression invocationSuffix				# functionCallExpr
-	| LPAREN typeSpecifier RPAREN expression	# castExpression;
+	| LPAREN typeSpecifier RPAREN expression	# castExpression
+    | expression (BINOP_ASSIGN) expression		# assignmentExpr;
 
 invocationSuffix: LPAREN argumentList? RPAREN;
 argumentList: expression (COMMA expression)*;

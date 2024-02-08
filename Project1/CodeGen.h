@@ -23,6 +23,8 @@ public:
     void add_var(std::string name, Object* value);
 };
 
+// do we need a way to track what function we are inside of?
+
 class CodeGen {
 public:
     LLVMContext context;
@@ -76,6 +78,8 @@ private:
     FunctionDefinitionObject* def = nullptr;
     Object* this_object = nullptr;
     std::vector<std::string> param_names;
+    std::map<std::string, Object*> additional_variables;
+
 
 public:
     FunctionBuilder(CodeGen* codegen, std::string id, FunctionTypeObject* type);
@@ -83,5 +87,5 @@ public:
     FunctionDefinitionObject* declare(std::vector<Parameter*> params = std::vector<Parameter*>());
     void define(std::vector<Statement*> statements);
     void set_binding(TypeObject* type);
-
+    void set_variable(std::string name, Object* value);
 };
