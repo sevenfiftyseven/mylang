@@ -339,7 +339,9 @@ TypeMemberDefinition* AST::FunctionDeclaration::build_member(CodeGen* gen, TypeO
 
     functionType->underlying_type = FunctionType::get(result_type->underlying_type, llvm_types, false);
 
-    FunctionBuilder builder(gen, id, functionType);
+    std::string fn_name = TypeObject::member_fn_name(type, id, functionType);
+
+    FunctionBuilder builder(gen, fn_name, functionType);
     auto fn_def = builder.declare(parameters);
 
     if (!is_static)

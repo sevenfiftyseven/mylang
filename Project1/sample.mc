@@ -26,7 +26,10 @@ int main() {
 	entity a;
 	entity b;
 
-	printf("a: %i\n", a.id);
+	printf("counter: %i\n", entity.counter);
 	printf("b: %i\n", b.my_id());
+
+	entity.next_id();
+
 	return 0;
 }

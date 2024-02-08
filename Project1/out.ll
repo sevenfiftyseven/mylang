@@ -7,7 +7,7 @@ source_filename = "top"
 @0 = common global i32 0
 @1 = private unnamed_addr constant [27 x i8] c"counter updated: %i -> %i\0A\00", align 1
 @2 = private unnamed_addr constant [6 x i8] c"Hello\00", align 1
-@3 = private unnamed_addr constant [7 x i8] c"a: %i\0A\00", align 1
+@3 = private unnamed_addr constant [13 x i8] c"counter: %i\0A\00", align 1
 @4 = private unnamed_addr constant [7 x i8] c"b: %i\0A\00", align 1
 
 declare i32 @strlen(i8*)
@@ -16,7 +16,7 @@ declare i32 @printf(...)
 
 declare i8* @itoa(i32, i8*, i32)
 
-define i32 @next_id() {
+define i32 @__entity_next_id() {
   %1 = alloca i32, align 4
   %2 = load i32, i32* @0, align 4
   store i32 %2, i32* %1, align 4
@@ -34,7 +34,7 @@ define i32 @next_id() {
 define void @__entity_constructor_entity(%0* %0) {
   %2 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
   %3 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
-  %4 = call i32 @next_id()
+  %4 = call i32 @__entity_next_id()
   store i32 %4, i32* %3, align 4
   ret void
 }
@@ -56,7 +56,7 @@ declare i8* @strcpy(i8*, i8*)
 
 declare noalias i8* @malloc(i32)
 
-define i32 @my_id(%0* %0) {
+define i32 @__entity_my_id_entity(%0* %0) {
   %2 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
   %3 = getelementptr inbounds %0, %0* %0, i32 0, i32 0
   %4 = load i32, i32* %3, align 4
@@ -68,10 +68,10 @@ define i32 @main() {
   call void @__entity_constructor_entity(%0* %1)
   %2 = alloca %0, align 8
   call void @__entity_constructor_entity(%0* %2)
-  %3 = getelementptr inbounds %0, %0* %1, i32 0, i32 0
-  %4 = load i32, i32* %3, align 4
-  %5 = call i32 (...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @3, i32 0, i32 0), i32 %4)
-  %6 = call i32 @my_id(%0* %2)
-  %7 = call i32 (...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @4, i32 0, i32 0), i32 %6)
+  %3 = load i32, i32* @0, align 4
+  %4 = call i32 (...) @printf(i8* getelementptr inbounds ([13 x i8], [13 x i8]* @3, i32 0, i32 0), i32 %3)
+  %5 = call i32 @__entity_my_id_entity(%0* %2)
+  %6 = call i32 (...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @4, i32 0, i32 0), i32 %5)
+  %7 = call i32 @__entity_next_id()
   ret i32 0
 }

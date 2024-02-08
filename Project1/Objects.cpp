@@ -2,6 +2,21 @@
 #include "CodeGen.h"
 
 
+Object* TypeObject::get_member(CodeGen* codegen, std::string name)
+{
+    auto member = members[name];
+
+    // non-static fields are not accessible.
+    // perhaps we should be able to return functions even though their first parameter isn't bound.
+    // you could say something like "somefunctype functocall = entity.my_id; functocall(myentity)";
+    // we would have to fix function calling (currently only bound members don't get slapped with the TryLoad)
+    // maybe we would have to do "functocall(&myentity)" because it has to explicitly be a reference?
+
+    if (member == nullptr || member->is_static == false) return nullptr; // exit if there is nothing to see.
+
+    return member->get(codegen, nullptr);
+}
+
 Object* TypeObject::create(CodeGen* codegen, llvm::Value* value)
 {   
     if (value != nullptr) {

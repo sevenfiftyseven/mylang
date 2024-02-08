@@ -6,7 +6,7 @@ source_filename = "top"
 @0 = internal unnamed_addr global i32 0
 @1 = private unnamed_addr constant [27 x i8] c"counter updated: %i -> %i\0A\00", align 1
 @2 = private unnamed_addr constant [6 x i8] c"Hello\00", align 1
-@3 = private unnamed_addr constant [7 x i8] c"a: %i\0A\00", align 1
+@3 = private unnamed_addr constant [13 x i8] c"counter: %i\0A\00", align 1
 @4 = private unnamed_addr constant [7 x i8] c"b: %i\0A\00", align 1
 
 declare i32 @strlen(ptr) local_unnamed_addr
@@ -56,8 +56,13 @@ define i32 @main() local_unnamed_addr {
   %5 = add i32 %4, 1
   store i32 %5, ptr @0, align 4
   %6 = tail call i32 (...) @printf(ptr nonnull @1, i32 %4, i32 %5)
-  %7 = tail call i32 (...) @printf(ptr nonnull @3, i32 %1)
-  %8 = tail call i32 (...) @printf(ptr nonnull @4, i32 %4)
+  %7 = load i32, ptr @0, align 4
+  %8 = tail call i32 (...) @printf(ptr nonnull @3, i32 %7)
+  %9 = tail call i32 (...) @printf(ptr nonnull @4, i32 %4)
+  %10 = load i32, ptr @0, align 4
+  %11 = add i32 %10, 1
+  store i32 %11, ptr @0, align 4
+  %12 = tail call i32 (...) @printf(ptr nonnull @1, i32 %10, i32 %11)
   ret i32 0
 }
 

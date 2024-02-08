@@ -62,6 +62,9 @@ public:
 
     std::vector<TypeMemberDefinition*> fields;
 
+    // Object overloads
+    Object* get_member(CodeGen* codegen, std::string name);
+
     // object manipulation
     Object* create(CodeGen* codegen, llvm::Value* value = nullptr);
     void construct(CodeGen* codegen, Object* target, std::vector<Object*> args);
@@ -86,6 +89,7 @@ public:
     TypeMemberDefinition* add_static_member_field(std::string name, Object* static_object);
 
     // type helper functions
+    // because pointers aren't really a thing at the moment we don't use this
     TypeObject* pointer_to();
 
     // how do we say a fn has variable args? idk yet.
